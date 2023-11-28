@@ -3,6 +3,8 @@
 
 class Our_Seat {
     public:
+        Our_Seat();
+
         void set_row(int row);
         int get_row() const;
 
@@ -12,11 +14,26 @@ class Our_Seat {
         void set_status(char status);
         char get_status() const;
 
+        // Inside the Our_Seat class
+        Our_Seat& operator=(const Our_Seat& rhs) {
+            if (this != &rhs) {  
+                row = rhs.row;
+                seat = rhs.seat;
+                status = rhs.status;
+            }
+        return *this;
+        }
+
     private:
         int row;
         char seat;
         char status;
 };
+
+Our_Seat::Our_Seat() {
+    row = 1;
+    seat = 'A'; 
+}
 
 //Setters
 void Our_Seat::set_row(int row) {
