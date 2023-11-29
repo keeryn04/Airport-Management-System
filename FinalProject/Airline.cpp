@@ -1,23 +1,27 @@
-// Airline.cpp
 #include <iostream>
-#include "Airline.h"
 using namespace std;
 
-Our_Airline::Our_Airline() {
-    // Constructor implementation if needed
+#include "Airline.h"
+
+int main(void) {
+    Our_Airline myAirline;
+
+    myAirline.setAirlineName("XYZ Airlines");
+
+    Our_Flight flight1;
+    flight1.set_flight_id("WJ1145");
+    flight1.set_numRows(30);
+    flight1.set_numSeats(10);
+
+    myAirline.addFlight(flight1);
+
+    myAirline.displayFlights();
+
+    myAirline.removeFlight(0);
+
+    myAirline.displayFlights();
+
+    return 0;
 }
 
-void Our_Airline::addFlight(const Our_Flight& flight) {
-    flights.push_back(flight);
-}
-
-Our_Flight Our_Airline::getFlight(const std::string& flight_id) const {
-    for (const auto& flight : flights) {
-        if (flight.get_flight_id() == flight_id) {
-            return flight;
-        }
-    }
-    // If flight_id is not found, return an empty flight
-    return Our_Flight();
-}
 
