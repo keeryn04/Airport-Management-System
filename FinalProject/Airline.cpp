@@ -1,5 +1,6 @@
 // Airline.cpp
 #include "Airline.h"
+using namespace std;
 
 Our_Airline::Our_Airline() {
     // Constructor implementation if needed
