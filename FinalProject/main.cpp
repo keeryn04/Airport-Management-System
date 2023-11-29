@@ -7,19 +7,20 @@ using namespace std;
 
 int main () {
     Our_Flight f = populate_flight("flight_info.txt");
-    #if 0
+    //cd c:/Users/keery/ENSF337/FinalProject
+
+    #if 1
     string id = f.get_flight_id();
     int rows = f.get_numRows();
     int seats = f.get_numSeats();
-    Our_Seat seat = f.get_Seat(6,'A');
-    Our_Passenger pass = f.get_Passenger(0);
+    Our_Seat seat = f.get_Seat(6,'D');
+    Our_Passenger pass = f.get_Passenger(1);
 
-    //cout << id << " " << rows << " " << seats << " " << seat.get_row() << " " << seat.get_col() << " " << pass.getfName();
+    cout << id << " " << rows << " " << seats << " " << seat.get_row() << " " << seat.get_col() << " " << pass.getfName() << " " << pass.get_id();
     #endif
     int choice = -1;
     display_header();
     
-    #if 1
     while (choice != 0) {
         switch(menu()) {
             case 1: 
@@ -51,7 +52,7 @@ int main () {
                 choice = 0;
         }
     }
-    #endif
+
     return 0;
 }
 
@@ -64,47 +65,52 @@ Our_Flight populate_flight(const char* filename) {
         cerr << "Error Opening File: " << filename << endl;
         throw runtime_error("Failed to open file");
     }
-
-    int numRows, numSeats, rowNum, pass_id;
-    char colNum;
+    int index = 0;
+    int numRows, numSeats, seatRow, pass_id; //numRows and numSeats are for the plane rows and seats
+    char seatColumn; //seatColumn and seatRow are for the specific seat of passenger
     string flight_id, fName, lName, phone;
     Our_Seat seatInfo;
     Our_Passenger passengerInfo;
 
-    in_file >> flight_id >> numRows >> numSeats;
+    in_file >> flight_id >> numRows >> numSeats; //Gets values for the plane
 
     f.set_flight_id(flight_id);
     f.set_numRows(numRows);
     f.set_numSeats(numSeats);
-    
-    int index = 0;
+
     string line;
-    while (getline(in_file, line, '\n') || EOF == 1) { //Loop for getting passenger info
-        //Gets strings
-        std::getline(in_file, fName, '\t');
-        std::getline(in_file, lName, '\t');
-        std::getline(in_file, phone, '\t');
-
-        in_file >> rowNum >> colNum >> pass_id; //Gets values after strings
+    while (getline(in_file, line)) {
+        istringstream iss(line); //iss used to detect single lines for each person
         
-        cout << fName << " " << lName << " " << phone << " " << rowNum << " " << colNum << " " << pass_id;
-
-        passengerInfo.setfName(fName);
-        passengerInfo.setlName(lName);
-        passengerInfo.setPhoneNumber(phone);
-        passengerInfo.set_id(pass_id);
-        f.set_Passenger(passengerInfo, index);
-
-        seatInfo.set_col(rowNum);
-        seatInfo.set_col(colNum);
-        seatInfo.set_status('T');
-        
-        if (rowNum >= 0 && rowNum < numRows && colNum >= 'A' && colNum < 'A' + numSeats) { //Sets each seat
-            f.set_Seat(seatInfo);
-        } else {
-            break;
+        iss >> fName; // saves first name, and skips whitespace if its only one space
+        if (iss.peek() == ' ') {
+            iss.ignore();
         }
-        index++; //Tracks number of passengers
+
+        iss >> lName; // saves last name, and skips whitespace if its only one space
+        if (iss.peek() == ' ') {
+            iss.ignore();
+        } 
+
+        iss >> phone >> seatRow >> seatColumn >> pass_id; //saves rest of data
+
+        if (seatRow >= 0 && seatRow < numRows && seatColumn >= 'A' && seatColumn < 'A' + numSeats) { //Checks that seat is valid on this flight, and sets info up accordingly
+            passengerInfo.setfName(fName);
+            passengerInfo.setlName(lName);
+            passengerInfo.setPhoneNumber(phone);
+            passengerInfo.set_id(pass_id);
+
+            seatInfo.set_row(seatRow);
+            seatInfo.set_col(seatColumn);
+            seatInfo.set_status('T');
+
+            f.set_Passenger(passengerInfo, index);
+            f.set_Seat(seatInfo);
+            index++;
+
+        } else { //If any error in data detected, it skips that passenger
+            cerr << "Invalid seat information for passenger " << pass_id << ". Skipping." << endl;
+        }
     }
 
     in_file.close();
@@ -113,25 +119,7 @@ Our_Flight populate_flight(const char* filename) {
 #endif
 
 #if 0
-Our_Flight populate_flight(const char* filename) {
-    Our_Flight f;
-    //Initialize variables for saving
-    char s[21];
-    int index = 0; //Used to store amount of passengers
-
-    int numRows, numSeats, rowNum, pass_id;
-    char colNum;
-    string flight_id, fName, lName, phone;
-    Our_Seat seatInfo;
-    Our_Passenger passengerInfo;
-
-    ifstream in_file(filename, ios::in); //Checks if file is open correctly
-    if (in_file.fail()) {
-        cerr << "Error Opening File: " << filename << endl;
-        throw runtime_error("Failed to open file");
-    }
-
-    do { //Saves data from file to variables
+do { //Saves data from file to variables
         in_file.get(s, 21, '\n');
         if (in_file.eof()) {
             break;
@@ -156,13 +144,7 @@ Our_Flight populate_flight(const char* filename) {
         f.set_Passenger(passengerInfo, index);
         f.set_Seat(seatInfo);
     } while (in_file.eof() != 1);
-
-    index++;
-    in_file.close();
-    return f;
-}
 #endif
-
 
 void cleanStandardInputStream() {
     int leftover;
