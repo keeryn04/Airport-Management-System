@@ -36,6 +36,7 @@ class Our_Passenger {
       int id;
 };
 
+//Default Constructor
 Our_Passenger::Our_Passenger() {
     id = 0;
     phoneNumber = "911";
@@ -45,11 +46,11 @@ Our_Passenger::Our_Passenger() {
 
 //Setters
 void Our_Passenger::setfName(const std::string& firstName) {
-    this->fname = fname;
+    this->fname = firstName;
 }
 
 void Our_Passenger::setlName(const std::string& lastName) {
-    this->lname = lname;
+    this->lname = lastName;
 }
 
 void Our_Passenger::setPhoneNumber(const std::string& phoneNumber) {
@@ -59,7 +60,6 @@ void Our_Passenger::setPhoneNumber(const std::string& phoneNumber) {
 void Our_Passenger::set_id(int id) {
     this->id = id;
 }
-
 
 //Getters
 std::string Our_Passenger::getfName()  const {

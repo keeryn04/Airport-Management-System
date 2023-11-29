@@ -21,4 +21,6 @@ int menu();
 
 void display_header();
 
+string trim_trailing_spaces(string& s);
+
 

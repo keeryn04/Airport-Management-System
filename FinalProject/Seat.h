@@ -14,22 +14,13 @@ class Our_Seat {
         void set_status(char status);
         char get_status() const;
 
-        // Inside the Our_Seat class
-        Our_Seat& operator=(const Our_Seat& rhs) {
-            if (this != &rhs) {  
-                row = rhs.row;
-                seat = rhs.seat;
-                status = rhs.status;
-            }
-        return *this;
-        }
-
     private:
         int row;
         char seat;
         char status;
 };
 
+//Default Constructor
 Our_Seat::Our_Seat() {
     row = 1;
     seat = 'A'; 
@@ -60,6 +51,5 @@ char Our_Seat::get_col() const {
 char Our_Seat::get_status() const {
     return status;
 }
-
 
 #endif

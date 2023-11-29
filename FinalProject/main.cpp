@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <string>
 using namespace std;
 
 #include "main.h"
@@ -18,6 +19,7 @@ int main () {
 
     cout << id << " " << rows << " " << seats << " " << seat.get_row() << " " << seat.get_col() << " " << pass.getfName() << " " << pass.get_id();
     #endif
+
     int choice = -1;
     display_header();
     
@@ -25,7 +27,7 @@ int main () {
         switch(menu()) {
             case 1: 
                 cout << "1 worked";
-                //f.displaySeatMap();
+                f.displaySeatMap();
                 pressEnter();
                 break;
             case 2:
@@ -56,7 +58,6 @@ int main () {
     return 0;
 }
 
-#if 1
 Our_Flight populate_flight(const char* filename) {
     Our_Flight f;
 
@@ -66,6 +67,7 @@ Our_Flight populate_flight(const char* filename) {
         throw runtime_error("Failed to open file");
     }
     int index = 0;
+    char s[21];
     int numRows, numSeats, seatRow, pass_id; //numRows and numSeats are for the plane rows and seats
     char seatColumn; //seatColumn and seatRow are for the specific seat of passenger
     string flight_id, fName, lName, phone;
@@ -78,21 +80,24 @@ Our_Flight populate_flight(const char* filename) {
     f.set_numRows(numRows);
     f.set_numSeats(numSeats);
 
-    string line;
-    while (getline(in_file, line)) {
-        istringstream iss(line); //iss used to detect single lines for each person
-        
-        iss >> fName; // saves first name, and skips whitespace if its only one space
-        if (iss.peek() == ' ') {
-            iss.ignore();
-        }
+    #if 1
+    do { //Saves data from file to variables
+        in_file.get(s, 21, '\0');
+        if (in_file.eof()) break;
+        fName = s;
+        trim_trailing_spaces(fName);
 
-        iss >> lName; // saves last name, and skips whitespace if its only one space
-        if (iss.peek() == ' ') {
-            iss.ignore();
-        } 
+        in_file.get(s, 21, '\0');
+        if (in_file.eof()) break;
+        lName = s;
+        trim_trailing_spaces(lName);
 
-        iss >> phone >> seatRow >> seatColumn >> pass_id; //saves rest of data
+        in_file.get(s, 21, '\0');
+        if (in_file.eof()) break;
+        phone = s;
+        trim_trailing_spaces(phone);
+
+        in_file >> seatRow >> seatColumn >> pass_id;
 
         if (seatRow >= 0 && seatRow < numRows && seatColumn >= 'A' && seatColumn < 'A' + numSeats) { //Checks that seat is valid on this flight, and sets info up accordingly
             passengerInfo.setfName(fName);
@@ -111,40 +116,13 @@ Our_Flight populate_flight(const char* filename) {
         } else { //If any error in data detected, it skips that passenger
             cerr << "Invalid seat information for passenger " << pass_id << ". Skipping." << endl;
         }
-    }
+    } while (!in_file.eof());
 
     in_file.close();
     return f;
+
+    #endif
 }
-#endif
-
-#if 0
-do { //Saves data from file to variables
-        in_file.get(s, 21, '\n');
-        if (in_file.eof()) {
-            break;
-        }
-        fName = s;
-        fName = trim_trailing_whitespace(fName);
-        lName = s;
-        lName = trim_trailing_whitespace(lName);
-        phone = s;
-        phone = trim_trailing_whitespace(phone);
-        in_file >> rowNum >> colNum >> pass_id;
-
-        passengerInfo.setfName(fName);
-        passengerInfo.setlName(lName);
-        passengerInfo.setPhoneNumber(phone);
-        passengerInfo.set_id(pass_id);
-
-        seatInfo.set_row(rowNum);
-        seatInfo.set_col(colNum);
-        seatInfo.set_status('T');
-
-        f.set_Passenger(passengerInfo, index);
-        f.set_Seat(seatInfo);
-    } while (in_file.eof() != 1);
-#endif
 
 void cleanStandardInputStream() {
     int leftover;
@@ -180,4 +158,11 @@ int menu() {
     cout << "Enter number here: ";
     cin >> choice;
     return choice;
+}
+
+string trim_trailing_spaces(string& s) {
+    while((s.at(s.size()-1) == ' '|| s.at(s.size()-1) == '\n') && s.size()> 0) {
+        s.pop_back();
+    }
+    return s;
 }
