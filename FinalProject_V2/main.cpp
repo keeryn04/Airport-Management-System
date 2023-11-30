@@ -23,7 +23,7 @@ int main () {
                 press_enter();
                 break;
             case 3:
-                addPassenger();
+                addPassenger(f);
                 press_enter();
                 break;
             case 4:
@@ -59,6 +59,7 @@ Our_Flight populate_flight(const char* filename) {
     char seatColumn; //seatColumn and seatRow are for the specific seat of passenger
     string flight_id, fName, lName, phone;
     Our_Passenger passengerInfo;
+    Our_Airline airlineInfo;
 
     in_file >> flight_id >> numRows >> numSeats; //Gets values for the plane
 
@@ -85,7 +86,7 @@ Our_Flight populate_flight(const char* filename) {
         in_file >> seatRow >> seatColumn >> pass_id;
 
         if (seatRow >= 0 && seatRow < numRows && seatColumn >= 'A' && seatColumn < 'A' + numSeats) { //Checks that seat is valid on this flight, and sets info up accordingly
-            
+
             passengerInfo.setfName(fName);
             passengerInfo.setlName(lName);
             passengerInfo.setPhoneNumber(phone);
@@ -102,6 +103,8 @@ Our_Flight populate_flight(const char* filename) {
             cerr << "Invalid seat information for passenger " << pass_id << ". Skipping." << endl;
         }
     } while (!in_file.eof());
+
+    f.set_numPass(index);
 
     in_file.close();
     return f;
@@ -153,8 +156,8 @@ string trim_trailing_spaces(string& s) {
 void displaySeatMap(Our_Flight& f) {
     cout << "Aircraft Seat Map" << endl;
     cout << "  ";
-    for (size_t i = 0; i < f.get_Seatmap()[0].size(); ++i) {
-        cout << static_cast<char>('A' + i) << " ";
+    for (size_t i = 0; i < f.get_Seatmap()[0].size(); ++i) { //Gets # of rows in seatmap
+        cout << static_cast<char>('A' + i) << " "; //Sets each to a letter
     }
     cout << endl;
 
@@ -172,9 +175,53 @@ void displaySeatMap(Our_Flight& f) {
 }
 
 void displayPassenger(Our_Flight& f) {
-    cout << "Displaying Passengers..." << endl;
+
 }
 
-void addPassenger() {
+void addPassenger(Our_Flight& f) { //Add checks for every input so user can't enter invalid values
+    Our_Passenger p;
+
+    int seatRow, pass_id; 
+    char seatColumn; 
+    string fName, lName, phone;
     cout << "Setting up new passenger..." << endl;
+    cout << "Please Enter Passenger Id: ";
+    cin >> pass_id;
+    cout << "Please Enter Passenger First Name: ";
+    cin >> fName;
+    cout << "Please Enter Passenger Last Name: ";
+    cin >> lName;
+    cout << "Please Enter Passenger Phone Number: ";
+    cin >> phone;
+    cout << "Please Enter Desired Row Number: ";
+    cin >> seatRow;
+    cout << "Please Enter Desired Seat Letter: ";
+    cin >> seatColumn;
+
+    p.set_id(pass_id);
+    p.setfName(fName);
+    p.setlName(lName);
+    p.setPhoneNumber(phone);
+    p.set_Seat(seatRow, seatColumn, 'T', f.get_numRows(), f.get_numSeats());
+    f.set_Passenger(p, f.get_numPass());
+    f.set_Seat_in_map(*p.get_Seat());
+    f.set_numPass(f.get_numPass() + 1);
+
+    cout << "Passenger Created";
+}
+
+void removePassenger(Our_Flight& f) { //Figure out how to delete instances
+    int pass_id; 
+
+    cout << "Removing passenger..." << endl;
+    cout << "Please Enter Passenger Id: ";
+    cin >> pass_id;
+    for (int i = 0; i < f.get_numPass(); i++) {
+        if (f.get_Passenger(i).get_id() == pass_id) {
+            continue;
+        }
+    }
+    f.set_numPass(f.get_numPass() - 1);
+
+    cout << "Passenger Deleted";
 }
