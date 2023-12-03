@@ -1,8 +1,0 @@
-WJ1045   20    5
-Bill William        Harris              403-100-0000        6A  10000
-Tim                 Moore DAVIS         403-020-0000        5B  10010
-Jim                 Li                  403-003-0000        19C 10002
-Kim                 Harris              403-100-0001        6D  10003
-Bill                Moore DAVIS         403-020-0020        15B 10004
-Ali                 Hassan              403-003-0300        19D 10005
-Martine Olivier     Van Paris           403-100-3000        16E 10006 
